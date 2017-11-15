@@ -21,8 +21,8 @@ public class PlayerController : MonoBehaviour
         m_anim = GetComponent<SimpleAnimation>();
         m_spawnPosition = transform.position;
 	}
-	
-    void FixedUpdate ()
+
+    void Update ()
     {
         // ダメージを受けている時は何もしない
         if (m_isFrozen) return;
