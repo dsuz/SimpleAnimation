@@ -14,12 +14,15 @@ public class PlayerController : MonoBehaviour
     bool m_isFrozen;
     SimpleAnimation m_anim;
     Vector3 m_spawnPosition;
+    /// <summary>攻撃の当たり判定を表すコライダー</summary>
+    [SerializeField] Collider2D m_attackCollider;
 
 	void Start ()
     {
         m_rb = GetComponent<Rigidbody2D>();
         m_anim = GetComponent<SimpleAnimation>();
         m_spawnPosition = transform.position;
+        ActivateAttack(false);
 	}
 
     void Update ()
@@ -49,13 +52,21 @@ public class PlayerController : MonoBehaviour
                 m_anim.Play("Footwork");
             else
                 m_anim.Play("Move");
+
+            ActivateAttack(false);
         }
         else
         {
             if (m_rb.velocity.y > 0)
+            {
                 m_anim.Play("JumpUp");
+                ActivateAttack(true);
+            }
             else if (m_rb.velocity.y < 0)
+            {
                 m_anim.Play("JumpDown");
+                ActivateAttack(false);
+            }
         }
 
         // 落ちたら元の位置に戻す
@@ -74,6 +85,7 @@ public class PlayerController : MonoBehaviour
         {
             m_isFrozen = true;
             m_anim.Play("Damage");
+            ActivateAttack(false);
             Invoke("RecoverFrozen", m_damageDurationSeconds);
         }
     }
@@ -81,5 +93,11 @@ public class PlayerController : MonoBehaviour
     void RecoverFrozen()
     {
         m_isFrozen = false;
+    }
+
+    void ActivateAttack(bool isAttack)
+    {
+        if (isAttack) m_attackCollider.enabled = true;
+        else m_attackCollider.enabled = false;
     }
 }
